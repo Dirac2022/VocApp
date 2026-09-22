@@ -1,0 +1,10 @@
+# Secretos
+.env
+.env.*
+
+# Dependencias
+node_modules/
+
+# Temporales
+.expo/
+.DS_Store
