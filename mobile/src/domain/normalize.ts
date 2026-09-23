@@ -5,11 +5,11 @@
  */
 export function normalize(input: string): string {
     return input
-        .toLocaleLowerCase()
+        .toLowerCase()
         .normalize('NFD')
         .replace(/n\u0303/g, 'ñ')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/s+/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim()
         .replace(/^[¡¿]+/, '')
         .replace(/[.,;:!?]+$/, '')
