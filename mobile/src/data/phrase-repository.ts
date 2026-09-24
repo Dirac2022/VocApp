@@ -23,6 +23,7 @@ export interface NewTranslationInput {
  * - Toda Phrase devuelta incluye sus traducciones
  * - El texto se recibe tal como lo escribio la persona; normalizar es tarea de la implementacion
  * - Insertar algo que ya existe no lanza error: devuelve lo que ya habia
+ * - insertTranslation sobre una frase inexistente si lanza error: es un fallo de programacion, no una busqueda
  */
 export interface PhraseRepository {
     /** Una frase al azar, opcionalmente de un idioma concreto. null si no hay ninguna. */
@@ -49,3 +50,6 @@ export interface PhraseRepository {
     /** Borra la frase y, en cascada, sus traducciones */
     deletePhrase(id: string): Promise<void>;
 }
+
+/** Genera identificadores unicos. Se inyecta para que las pruebas sean predecibles */
+export type IdGenerator = () => string;
