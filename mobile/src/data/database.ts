@@ -26,6 +26,13 @@ export async function runMigrations(db: SQLite.SQLiteDatabase): Promise<number> 
     const row = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
     let current = row?.user_version ?? 0;
 
+    if (current > MIGRATIONS.length) {
+        throw new Error(
+            `La base de datos está en la versión ${current}, pero esta versión de la app ` +
+            `solo conoce hasta la ${MIGRATIONS.length}. Instala una versión más reciente de VocApp.`
+        );
+    }
+
     for (let version = current + 1; version <= MIGRATIONS.length; version++) {
         const sql = MIGRATIONS[version - 1];
 
