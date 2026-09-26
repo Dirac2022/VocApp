@@ -76,7 +76,7 @@ El modelo está en tercera forma normal: cada tabla tiene una clave, cada atribu
 | # | Consulta | Frecuencia | Índice que la sirve |
 |---|---|---|---|
 | Q1 | Una frase al azar, opcionalmente filtrada por `lang` | cada pregunta | ninguno (recorre la tabla; aceptable bajo S-01) |
-| Q2 | Traducciones de una frase | cada pregunta | `ix_translation_phrase_id` |
+| Q2 | Traducciones de una frase | cada pregunta | `uq_translation_phrase_lang_text_norm`, por la regla de la izquierda |
 | Q3 | Buscar frases cuyo `text_norm` **contenga** un término, o alguna de cuyas traducciones lo contenga | mientras el usuario teclea | ninguno: `LIKE '%term%'` no usa índice. Aceptable bajo S-01; FTS5 si duele (punto de ruptura 2) |
 | Q4 | Comprobar si existe una frase con (`lang`, `text_norm`) exacto | al agregar | `uq_phrase_lang_text_norm` |
 | Q5 | Insertar frase + primera traducción | al agregar | transacción; índices únicos comprueban duplicados |
