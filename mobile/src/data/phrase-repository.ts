@@ -1,17 +1,27 @@
 import { LanguageCode, Phrase, Translation } from '../domain/types';
 
-/** Datos para crear una frase junto con su primera traducción */
+/** Datos para crear una frase junto con su primera traducción
+ * Una frase nunca se crea sola: el dominio exige que tenga al menos
+ * una traducción
+*/
 export interface NewPhraseInput {
+    /** Idioma de origen de la frase */
     lang: LanguageCode;
+    /** Texto en el idioma de origen, tal como lo escribió la persona. Sin normalizar */
     text: string;
+    /** Idioma de la traducción */
     translationLang: LanguageCode;
+    /** Texto de la traducción, tal como lo escribió la persona. Sin normalizar */
     translationText: string;
 }
 
 /** Datos para agregar una traducción a una frase que ya existe */
 export interface NewTranslationInput {
+    /** Clave primaria de la frase a la que pertenecerá. Debe existir */
     phraseId: string;
+    /** Idioma de la traducción */
     lang: LanguageCode;
+    /** Texto de la traducción, tal como lo escribió la persona. Sin normalizar */
     text: string;
 }
 
@@ -26,30 +36,69 @@ export interface NewTranslationInput {
  * - insertTranslation sobre una frase inexistente si lanza error: es un fallo de programacion, no una busqueda
  */
 export interface PhraseRepository {
-    /** Una frase al azar, opcionalmente de un idioma concreto. null si no hay ninguna. */
+    /** 
+     * Elige una frase al azar para practicar
+     * @param lang Si se indica, solo frases de ese idioma de origen. Si se omite, de cualquiera.
+     * @returns La frase elegida con sus traducciones, o null si el diccionario está vacío.
+     */
     getRandom(lang?: LanguageCode): Promise<Phrase | null>;
 
-    /** La frase con ese identificador, o null si no existe. */
+    /**
+     * Recupera una frase por su clave primaria
+     * @param id Clave primaria de la frase
+     * @returns La frase con sus traducciones, o null si no existe
+     */
     findById(id: string): Promise<Phrase | null>;
 
-    /** La frase cuyo texto equivale al dado en ese idioma, o null. Sirve para detectar duplicados */
+    /**
+     * Busca una frase por texto exacto una vez normalizado. Sirve para detectar duplicados
+     * antes de crear una frase nueva
+     * @param lang Idioma de origen en el que buscar
+     * @param text Texto sin normalizar; la implementacion lo normaliza
+     * @returns La frase equivalente, o null si no hay ninguna
+     */
     findByText(lang: LanguageCode, text: string): Promise<Phrase | null>;
 
-    /** Frases cuyo texto, o el de alguna de sus traducciones, contiene el termino */
+    /**
+     * Busqueda por contenido para la pantalla de agregar traducción: basta con
+     * recordar un trozo de la frase o de cualquiera de sus traducciones.
+     * @param term Texto parcial sin normalizar. Si queda vacío al normalizar, devuelve todo.
+     * @returns Las frases coincidentes, de la más reciente a la más antigua. Vacío si no hay ninguna
+     */
     search(term: string): Promise<Phrase[]>;
 
-    /** Todas las frases, de la mas reciente a la mas antigua */
+    /**
+     * Lista el diccionario completo.
+     * @returns  Todas las frases con sus traducciones, de la más reciente a la más antigua
+     */
     listAll(): Promise<Phrase[]>;
 
-    /** Crea frase y primera traduccion de forma atomica. Si la frase ya existia, agrega la traduccion a la existente */
+    /**
+     * Crea una frase y su primera traduccion en una sola operación atómica
+     * Si ya existia una frase equivalente en ese idioma, no la duplica: le añade la traducción.
+     * @param input Textos e idiomas de la frase y de su primera traducción
+     * @returns La frase resultante, nueva o ya existente, con todas sus traducciones
+     */
     insertPhraseWithTranslation(input: NewPhraseInput): Promise<Phrase>;
 
-    /** Agrega una traduccion a una frase existente. Si ya estaba, devuelve la existente */
+    /**
+     * Añade una traducción alternativa a una frase existente
+     * @param input Clave foránea de la frase, idioma y texto de la traducción
+     * @returns La traduccion creada, o la que ya existia si era equivalente
+     * @throws Error si la frase indicada no existe
+     */
     insertTranslation(input: NewTranslationInput): Promise<Translation>;
 
-    /** Borra la frase y, en cascada, sus traducciones */
+    /**
+     * Borra una frase y, en cascada, todas sus traducciones
+     * @param id Clave primaria de la frase. Si no existe, no hace nada ni lanza error.
+     */
     deletePhrase(id: string): Promise<void>;
 }
 
-/** Genera identificadores unicos. Se inyecta para que las pruebas sean predecibles */
+/**
+ * Genera identificadores únicos. Se inyecta en cada implementación en lugar de
+ * llamar directamente a una librería, para que las pruebas usen un contador
+ * predecible y el código del repositorio no dependa de Expo
+ */
 export type IdGenerator = () => string;
