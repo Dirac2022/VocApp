@@ -10,8 +10,22 @@ const sample: Phrase = {
   createdAt: '2026-09-22T00:00:00.000Z',
   updatedAt: '2026-09-22T00:00:00.000Z',
   translations: [
-    { id: 'demo-t1', phraseId: 'demo-1', lang: 'es', text: 'Llueve a cántaros', createdAt: '2026-09-22T00:00:00.000Z' },
-    { id: 'demo-t2', phraseId: 'demo-1', lang: 'es', text: 'Esta lloviendo muchísimo', createdAt: '2026-09-22T00:00:00.000Z' },
+    {
+      id: 'demo-t1',
+      phraseId: 'demo-1',
+      lang: 'es',
+      text: 'Llueve a cántaros',
+      createdAt: '2026-09-22T00:00:00.000Z',
+      updatedAt: '2026-09-22T00:00:00.000Z'
+    },
+    {
+      id: 'demo-t2',
+      phraseId: 'demo-1',
+      lang: 'es',
+      text: 'Esta lloviendo muchísimo',
+      createdAt: '2026-09-22T00:00:00.000Z',
+      updatedAt: '2026-09-22T00:00:00.000Z'
+    },
   ],
 };
 

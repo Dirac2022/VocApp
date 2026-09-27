@@ -6,6 +6,7 @@ export interface Translation {
     lang: LanguageCode;
     text: string;
     createdAt: string;
+    updatedAt: string;
 }
 
 export interface Phrase {

@@ -24,7 +24,8 @@ export const MIGRATIONS: string[] = [
         lang        TEXT NOT NULL CHECK (length(lang) = 2),
         text        TEXT NOT NULL CHECK (length(trim(text)) > 0),
         text_norm   TEXT NOT NULL,
-        created_at  TEXT NOT NULL
+        created_at  TEXT NOT NULL,
+        updated_at  TEXT NOT NULL
     );
 
     CREATE TABLE app_setting (

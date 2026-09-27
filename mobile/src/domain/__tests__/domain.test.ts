@@ -16,7 +16,8 @@ function makePhrase(...translations: string[]): Phrase {
             phraseId: 'p1',
             lang: 'es',
             text,
-            createdAt: now
+            createdAt: now,
+            updatedAt: now,
         }))
     }
 }

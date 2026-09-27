@@ -88,6 +88,7 @@ export class InMemoryPhraseRepository implements PhraseRepository {
                     lang: input.translationLang,
                     text: input.translationText.trim(),
                     createdAt: now,
+                    updatedAt: now,
                 },
             ],
         };
@@ -109,17 +110,19 @@ export class InMemoryPhraseRepository implements PhraseRepository {
             return already;
         }
 
+        const now = new Date().toISOString();
         const translation: Translation = {
             id: this.newId(),
             phraseId: phrase.id,
             lang: input.lang,
             text: input.text.trim(),
-            createdAt: new Date().toISOString(),
+            createdAt: now,
+            updatedAt: now,
         };
 
         this.phrases.set(phrase.id, {
             ...phrase,
-            updatedAt: translation.createdAt,
+            updatedAt: now,
             translations: [...phrase.translations, translation],
         });
 

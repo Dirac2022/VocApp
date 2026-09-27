@@ -98,6 +98,7 @@ erDiagram
         text text "traducción tal cual la escribió el usuario"
         text text_norm "normalizada; única junto con phrase_id y lang"
         text created_at "ISO 8601 en UTC"
+        text updated_at "ISO 8601 en UTC"
     }
 
     APP_SETTING {

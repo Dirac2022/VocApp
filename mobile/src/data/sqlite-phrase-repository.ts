@@ -27,6 +27,7 @@ interface TranslationRow {
     text: string;
     text_norm: string;
     created_at: string;
+    updated_at: string;
 }
 
 /** Convierte una fila de la base de datos en el objeto de dominio */
@@ -37,6 +38,7 @@ function toTranslation(row: TranslationRow): Translation {
         lang: row.lang as LanguageCode,
         text: row.text,
         createdAt: row.created_at,
+        updatedAt: row.updated_at,
     };
 }
 
@@ -147,9 +149,17 @@ export class SQLitePhraseRepository implements PhraseRepository {
                 [phraseId, input.lang, input.text.trim(), normalize(input.text), now, now],
             );
             await this.db.runAsync(
-                `INSERT INTO translation (id, phrase_id, lang, text, text_norm, created_at)
-                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [translationId, phraseId, input.translationText.trim(), normalize(input.translationText), now],
+                `INSERT INTO translation (id, phrase_id, lang, text, text_norm, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    translationId,
+                    phraseId,
+                    input.translationLang,
+                    input.translationText.trim(),
+                    normalize(input.translationText),
+                    now,
+                    now
+                ],
             );
         });
 
@@ -186,10 +196,10 @@ export class SQLitePhraseRepository implements PhraseRepository {
 
         await this.db.withTransactionAsync(async () => {
             await this.db.runAsync(
-                `INSERT INTO translation (id, phrase_id, lang, text, text_norm, created_at)
-                 VALUES (?, ?, ?, ?, ?, ?)   
+                `INSERT INTO translation (id, phrase_id, lang, text, text_norm, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)   
                 `,
-                [id, input.phraseId, input.lang, input.text.trim(), textNorm, now]
+                [id, input.phraseId, input.lang, input.text.trim(), textNorm, now, now]
             );
 
             await this.db.runAsync(
@@ -204,6 +214,7 @@ export class SQLitePhraseRepository implements PhraseRepository {
             lang: input.lang,
             text: input.text.trim(),
             createdAt: now,
+            updatedAt: now,
         };
     }
 
