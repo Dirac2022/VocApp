@@ -34,7 +34,7 @@ export const MIGRATIONS: string[] = [
         updated_at  TEXT NOT NULL
     );
 
-    CREATED UNIQUE INDEX uq_phrase_lang_text_norm
+    CREATE UNIQUE INDEX uq_phrase_lang_text_norm
         ON phrase (lang, text_norm);
 
     CREATE UNIQUE INDEX uq_translation_phrase_lang_text_norm
