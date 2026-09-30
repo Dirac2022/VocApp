@@ -48,7 +48,7 @@ export function DictionaryScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff', paddingTop: 64, paddingHorizontal: 16 },
+    container: { flex: 1, backgroundColor: '#fff', paddingTop: 16, paddingHorizontal: 16 },
     centered: {
         flex: 1,
         backgroundColor: '#fff',
