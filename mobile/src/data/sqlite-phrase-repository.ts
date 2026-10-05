@@ -65,6 +65,7 @@ export class SQLitePhraseRepository implements PhraseRepository {
                 )
                 : await this.db.getFirstAsync<PhraseRow>(
                     'SELECT * FROM phrase WHERE lang = ? ORDER BY RANDOM() LIMIT 1',
+                    [lang],
                 );
 
         if (row === null) {
