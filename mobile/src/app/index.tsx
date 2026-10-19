@@ -13,12 +13,11 @@ export default function DictionaryRoute() {
             <View style={styles.content}>
                 <DictionaryScreen />
             </View>
-            <Link
-                href="/practicar"
-                style={[styles.link, { paddingBottom: insets.bottom + 16 }]}
-            >
-                Ir a practicar
-            </Link>
+
+            <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
+                <Link href="/agregar" style={styles.link}>Agregar frase</Link>
+                <Link href="/practicar" style={styles.link}>Practicar</Link>
+            </View>
         </View>
     );
 }
@@ -26,10 +25,14 @@ export default function DictionaryRoute() {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     content: { flex: 1 },
-    link: {
-        padding: 16,
-        textAlign: 'center',
-        color: '#1f6feb',
-        fontSize: 16,
+    bar: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        borderTopWidth: 1,
+        borderTopColor: "#eee",
+        paddingTop: 12,
+        backgroundColor: "#fff",
     },
+    link: { color: "#1f6feb", fontSize: 16 }
 });
