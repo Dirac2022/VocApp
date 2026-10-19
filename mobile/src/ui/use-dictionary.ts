@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { getPhraseRepository } from '../composition';
 import { Phrase } from '../domain/types';
 
@@ -20,34 +21,36 @@ export function useDictionary(): DictionaryState {
     const [phrases, setPhrases] = useState<Phrase[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        let cancelled = false;
+    useFocusEffect(
+        useCallback(() => {
+            let cancelled = false;
 
-        async function load() {
-            try {
-                const repository = await getPhraseRepository();
-                const all = await repository.listAll();
+            async function load() {
+                try {
+                    const repository = await getPhraseRepository();
+                    const all = await repository.listAll();
 
-                if (cancelled) {
-                    return;
+                    if (cancelled) {
+                        return;
+                    }
+                    setPhrases(all);
+                    setStatus("ready");
+                } catch (error) {
+                    if (cancelled) {
+                        return;
+                    }
+                    setErrorMessage(String(error));
+                    setStatus("error");
                 }
-                setPhrases(all);
-                setStatus('ready');
-            } catch (error) {
-                if (cancelled) {
-                    return;
-                }
-                setErrorMessage(String(error));
-                setStatus('error');
             }
-        }
 
-        load();
+            load();
 
-        return () => {
-            cancelled = true;
-        }
-    }, []);
+            return () => {
+                cancelled = true;
+            };
+        }, []),
+    );
 
     return { status, phrases, errorMessage };
 }
