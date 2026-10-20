@@ -11,5 +11,6 @@ Un ADR es inmutable. Si una decisión cambia, se escribe uno nuevo que supersede
 | [ADR-0005](ADR-0005-uuid-generado-en-cliente-como-identificador.md) | Identificadores UUID generados en el teléfono, con marcas de tiempo en UTC | Aceptado | 2026-09-21 |
 | [ADR-0006](ADR-0006-codigo-de-idioma-en-el-modelo-desde-v1.md) | Código de idioma en frases y traducciones desde la versión 1 | Aceptado | 2026-09-21 |
 | [ADR-0007](ADR-0007-expo-router-para-la-navegacion.md) | Expo Router para la navegación entre pantallas | Aceptado | 2026-09-29 |
+| [ADR-0008](ADR-0008-comandos-por-caso-de-uso-consultas-directas.md) | Los comandos pasan por un caso de uso; las consultas sin reglas usan el puerto | Aceptado | 2026-10-19 |
 
 Todos pasan a **Aceptado** cuando el propietario apruebe el documento maestro `../README.md`.
