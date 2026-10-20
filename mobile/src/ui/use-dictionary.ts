@@ -1,25 +1,42 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { getPhraseRepository } from '../composition';
 import { Phrase } from '../domain/types';
 
 export type DictionaryStatus = 'loading' | 'ready' | 'error';
 
+/** Milisegundos de espera desde la ultima tecla antes de consultar */
+const DEBOUNCE_MS = 250;
+
 /** Lo que el hook entrega a la pantalla */
 export interface DictionaryState {
     status: DictionaryStatus;
     phrases: Phrase[];
     errorMessage: string;
+    term: string;
+    setTerm: (text: string) => void;
 }
 
 /**
- * Carga el diccionario completo una vez, al montarse la pantalla,
- * y expone en qué punto está esa carga
+ * Lista el diccionario y lo filtra en vivo segun lo que se escriba
  */
 export function useDictionary(): DictionaryState {
     const [status, setStatus] = useState<DictionaryStatus>('loading');
     const [phrases, setPhrases] = useState<Phrase[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Lo que se ve en el campo: cambia en cada tecla.
+    const [term, setTerm] = useState("");
+    // Lo que se consulta: cambia solo cuando se deja de teclear
+    const [debouncedTerm, setDebouncedTerm] = useState("");
+
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedTerm(term), DEBOUNCE_MS);
+
+        // Se ejecuta antes del siguiente efecto: cancela el temporizador
+        // anterior, de modo que solo sobrevive el de la ultima tecla.
+        return () => clearTimeout(timer);
+    }, [term]);
 
     useFocusEffect(
         useCallback(() => {
@@ -28,12 +45,12 @@ export function useDictionary(): DictionaryState {
             async function load() {
                 try {
                     const repository = await getPhraseRepository();
-                    const all = await repository.listAll();
+                    const found = await repository.search(debouncedTerm);
 
                     if (cancelled) {
                         return;
                     }
-                    setPhrases(all);
+                    setPhrases(found);
                     setStatus("ready");
                 } catch (error) {
                     if (cancelled) {
@@ -49,9 +66,9 @@ export function useDictionary(): DictionaryState {
             return () => {
                 cancelled = true;
             };
-        }, []),
+        }, [debouncedTerm]),
     );
 
-    return { status, phrases, errorMessage };
+    return { status, phrases, errorMessage, term, setTerm };
 }
 
