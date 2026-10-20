@@ -1,15 +1,4 @@
-import { InMemoryPhraseRepository } from "../in-memory-phrase-repository";
-import { IdGenerator } from "../phrase-repository";
-
-/** Generador predecible: id-1, id-2, id-3... Hace las pruebas reproducibles */
-function counterIds(): IdGenerator {
-    let n = 0;
-    return () => `id-${++n}`;
-}
-
-function makeRepo(): InMemoryPhraseRepository {
-    return new InMemoryPhraseRepository(counterIds());
-}
+import { makeRepo } from "../../test-support/repository";
 
 describe('InMemoryPhraseRepository', () => {
     it('devuelve null cuando está vació', async () => {

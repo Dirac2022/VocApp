@@ -1,17 +1,5 @@
-import { InMemoryPhraseRepository } from '../../data/in-memory-phrase-repository';
-import { IdGenerator } from '../../data/phrase-repository';
 import { evaluateAnswer, nextRound, revealAnswer } from '../practice';
-
-/** Generador predecible de identificadores: id-1, id-2, id-3... */
-function counterIds(): IdGenerator {
-    let n = 0;
-    return () => `id-${++n}`;
-}
-
-/** Repositorio vacío, listo para llenar en cada prueba. */
-function makeRepo(): InMemoryPhraseRepository {
-    return new InMemoryPhraseRepository(counterIds());
-}
+import { makeRepo } from '../../test-support/repository';
 
 describe('nextRound', () => {
     it('devuelve null cuando el diccionario esta vacío', async () => {
