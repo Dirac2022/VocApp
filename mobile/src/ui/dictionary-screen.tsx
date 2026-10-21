@@ -1,16 +1,20 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
+import { Link } from "expo-router";
 import { Phrase } from '../domain/types';
 import { DictionaryStatus, useDictionary } from './use-dictionary';
 
 /** Una fila de la lista: la frase en inglés y sus traducciones debajo */
 function PhraseItem({ phrase }: { phrase: Phrase }) {
     return (
-        <View style={styles.row}>
-            <Text style={styles.english}>{phrase.text}</Text>
-            <Text style={styles.spanish}>
-                {phrase.translations.map(((t) => t.text)).join(' · ')}
-            </Text>
-        </View>
+        <Link href={{ pathname: "/frase/[id]", params: { id: phrase.id } }} asChild>
+            <Pressable style={styles.row}>
+                <Text style={styles.english}>{phrase.text}</Text>
+                <Text style={styles.spanish}>
+                    {phrase.translations.map(((t) => t.text)).join(' · ')}
+                </Text>
+            </Pressable>
+
+        </Link>
     );
 }
 
