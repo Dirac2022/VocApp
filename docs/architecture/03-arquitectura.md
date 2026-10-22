@@ -93,7 +93,7 @@ Formato del respaldo JSON, versión 1:
       "createdAt": "...",
       "updatedAt": "...",
       "translations": [
-        { "id": "uuid", "lang": "es", "text": "perro", "createdAt": "..." }
+        { "id": "uuid", "lang": "es", "text": "perro", "createdAt": "...", "updatedAt": "..." }
       ]
     }
   ]
