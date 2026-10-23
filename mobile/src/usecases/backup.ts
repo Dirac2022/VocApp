@@ -1,5 +1,7 @@
 import { PhraseRepository } from "../data/phrase-repository";
 import { LanguageCode, Phrase } from "../domain/types";
+import { addPhrase } from "./add-phrase";
+import { addTranslation } from "./add-translation";
 
 /**
  * Version del formato del archivo. Sube cuando la forma del archivo cambie
@@ -205,4 +207,92 @@ export function parseBackup(raw: string): ParseBackupResult {
             phrases,
         },
     };
+}
+
+
+/** Que se hizo al restaurar, para poder contarselo a la persona */
+export interface RestoreSummary {
+    /** Frases que venian en el archivo */
+    phrasesInFile: number;
+    /** Frases que no existian y se crearon */
+    phrasesCreated: number;
+    /** Traducciones nuevas agregadas, a frases nuevas o ya existentes */
+    translationsAdded: number;
+    /** Entradas del archivo que no se pudieron usar */
+    skipped: number;
+}
+
+/**
+ * Vuelca el contenido de un respaldo en el diccionario.
+ *
+ * FUSIONA, no reemplaza: añade lo que falte y deja intacto lo que ya hubiera.
+ * Importar dos veces el mismo archivo no duplica nada, porque el repositorio
+ * detecta frases y traducciones equivalentes por su texto normalizado.
+ *
+ * Limitación aceptada: los identificadores y las fechas del archivo NO se
+ * conservan. Las frases se vuelven a crear con identificadores nuevos y con
+ * la fecha de hoy, porque el puerto no ofrece una operación para insertar
+ * con valores dados. Conservarlos exigiría ampliar el contrato, y haría
+ * falta en la fase 2 si llega la sincronización.
+ *
+ * @param repository Puerto de acceso a las frases.
+ * @param backup Archivo ya validado por parseBackup.
+ * @returns Un resumen de lo que se creó, se añadió y se saltó.
+ */
+export async function restoreBackup(
+    repository: PhraseRepository,
+    backup: BackupFile,
+): Promise<RestoreSummary> {
+    let phrasesCreated = 0;
+    let translationsAdded = 0;
+    let skipped = 0;
+
+    for (const item of backup.phrases) {
+        const [firstTranslation, ...otherTranslations] = item.translations;
+
+        // El dominio exige que toda frase tenga al menos una traduccion
+        if (firstTranslation === undefined) {
+            skipped += 1;
+            continue;
+        }
+
+        const result = await addPhrase(repository, {
+            lang: item.lang,
+            text: item.text,
+            translationLang: firstTranslation.lang,
+            translationText: firstTranslation.text,
+        });
+
+        if (!result.ok) {
+            skipped += 1;
+            continue;
+        }
+
+        if (result.outcome === "created") {
+            phrasesCreated += 1;
+        }
+
+        if (result.outcome === "translation_added") {
+            translationsAdded += 1;
+        }
+
+        for (const translation of otherTranslations) {
+            const added = await addTranslation(repository, {
+                phraseId: result.phrase.id,
+                lang: translation.lang,
+                text: translation.text,
+            });
+
+            if (added.ok && added.outcome === "added") {
+                translationsAdded += 1;
+            }
+        }
+    }
+
+    return {
+        phrasesInFile: backup.phrases.length,
+        phrasesCreated,
+        translationsAdded,
+        skipped,
+    }
 }
