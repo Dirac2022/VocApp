@@ -75,7 +75,7 @@ La pantalla combina las dos ideas propuestas: lista y autocompletado son la mism
 
 ### Respaldo
 1. Exportar: el caso de uso lee todo, arma un JSON `{ schemaVersion, exportedAt, phrases: [...] }` y lo entrega al sistema para compartir (Drive, correo).
-2. Importar: lee el JSON, verifica `schemaVersion`, inserta lo que no exista (los UUID permiten saber qué ya está).
+2. Importar: lee el JSON, verifica `schemaVersion`, valida la forma y **fusiona**: añade lo que falte y deja intacto lo que ya hubiera. No reemplaza, porque reemplazar destruiría datos de forma irreversible. Los identificadores y las fechas del archivo no se conservan: las frases se recrean con valores nuevos.
 
 ## Contratos de datos
 
