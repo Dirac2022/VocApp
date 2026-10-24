@@ -17,6 +17,7 @@ export default function DictionaryRoute() {
             <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
                 <Link href="/agregar" style={styles.link}>Agregar frase</Link>
                 <Link href="/practicar" style={styles.link}>Practicar</Link>
+                <Link href="/respaldo" style={styles.link}>Respaldo</Link>
             </View>
         </View>
     );
