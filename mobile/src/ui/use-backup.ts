@@ -8,7 +8,6 @@ import {
     restoreBackup,
     RestoreSummary,
 } from "../usecases/backup";
-import { parse } from "expo-linking";
 
 /** En que punto esta la operacion y que contarle a la persona. */
 export type BackupFeedback =
