@@ -23,7 +23,7 @@ describe("parseThemePreference", () => {
 });
 
 describe("InMemorySettingsRepository", () => {
-    it("empieza siguiente al sistema", async () => {
+    it("empieza siguiendo al sistema", async () => {
         expect(await new InMemorySettingsRepository().getThemePreference()).toBe("system");
     });
 

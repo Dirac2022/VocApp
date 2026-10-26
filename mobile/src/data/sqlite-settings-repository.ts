@@ -10,7 +10,7 @@ import { assertParams } from "./sql-params";
 /** Clave con la que se guarda el tema en la tabla app_setting */
 const THEME_KEY = "theme";
 
-/** Una fial de app_setting, con los nombres de columna tal cual llegan */
+/** Una fila de app_setting, con los nombres de columna tal cual llegan */
 interface SettingRow {
     key: string;
     value: string;

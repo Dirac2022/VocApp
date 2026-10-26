@@ -34,7 +34,7 @@ Todos viven dentro de la misma app. Diagrama: [C3 Componentes de la app](diagram
 
 ### Puerto `SettingsRepository` (interfaz)
 - **Responsabilidad**: leer y escribir ajustes por clave. Separado de `PhraseRepository` porque los ajustes no viajan en el respaldo ni se sincronizarán en fase 2.
-- **Interfaz pública**: `getThemePreference()`, `setThemePreference(value)`. Métodos con nombre y tipo propios en lugar de un `get(key)`/`set(key, value)` genérico: con un único ajuste, los tipos concretos impiden guardar un valor inválido, y añadir un segundo ajuste será añadir un par de métodos..
+- **Interfaz pública**: `getThemePreference()`, `setThemePreference(value)`. Métodos con nombre y tipo propios en lugar de un `get(key)`/`set(key, value)` genérico: con un único ajuste, los tipos concretos impiden guardar un valor inválido, y añadir un segundo ajuste será añadir un par de métodos.
 
 ### Adaptador SQLite
 - **Responsabilidad**: implementar `PhraseRepository` y `SettingsRepository` con SQL contra `expo-sqlite`. Contiene también el ejecutor de migraciones.
