@@ -12,7 +12,7 @@ interface AppRepositories {
 
 /**
  * Promesa de los repositorios, creada una sola vez y reutilizada.
- * Se guarda la promesa y no el resultado: si dos pantallas lo piden a la vez,
+ * Se guarda la promesa y no el resultado: si dos pantallas los piden a la vez,
  * ambas esperan la misma apertura en lugar de abrir la base de datos dos veces.
  */
 let repositoriesPromise: Promise<AppRepositories> | null = null;
