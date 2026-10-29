@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { AddPhraseFeedback, useAddPhraseForm } from "./use-add-phrase";
+import { Theme } from "./theme";
+import { useTheme, useThemedStyles } from "./theme-context";
 
 /** Convierte el estado del envio en el mensaje que se muestra, o nada. */
 function feedbackText(feedback: AddPhraseFeedback): string | null {
@@ -35,6 +37,9 @@ export function AddPhraseScreen() {
         submit
     } = useAddPhraseForm();
 
+    const { theme } = useTheme();
+    const styles = useThemedStyles(makeStyles);
+
     const saving = feedback.kind === "saving";
     const message = feedbackText(feedback);
     const isProblem = feedback.kind === "rejected" || feedback.kind === "error";
@@ -47,6 +52,7 @@ export function AddPhraseScreen() {
                 value={phraseText}
                 onChangeText={setPhraseText}
                 placeholder="It's raining cats and dogs"
+                placeholderTextColor={theme.textMuted}
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!saving}
@@ -58,6 +64,7 @@ export function AddPhraseScreen() {
                 value={translationText}
                 onChangeText={setTranslationText}
                 placeholder="Llueve a cántaros"
+                placeholderTextColor={theme.textMuted}
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!saving}
@@ -76,24 +83,26 @@ export function AddPhraseScreen() {
 }
 
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, backgroundColor: "#fff", gap: 8 },
-    label: { fontSize: 14, color: "#666", marginTop: 8 },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        padding: 12,
-        fontSize: 16,
-    },
-    primary: {
-        backgroundColor: "#1f6feb",
-        borderRadius: 8,
-        padding: 14,
-        alignItems: "center",
-        marginTop: 16,
-    },
-    primaryText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-    ok: { color: "#1a7f37", marginTop: 8 },
-    problem: { color: "#b00020", marginTop: 8 },
-});
+const makeStyles = (theme: Theme) =>
+    StyleSheet.create({
+        container: { flex: 1, padding: 16, backgroundColor: theme.background, gap: 8 },
+        label: { fontSize: 14, color: theme.textMuted, marginTop: 8 },
+        input: {
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16,
+            color: theme.text,
+        },
+        primary: {
+            backgroundColor: theme.primary,
+            borderRadius: 8,
+            padding: 14,
+            alignItems: "center",
+            marginTop: 16,
+        },
+        primaryText: { color: theme.onPrimary, fontSize: 16, fontWeight: "bold" },
+        ok: { color: theme.success, marginTop: 8 },
+        problem: { color: theme.danger, marginTop: 8 },
+    });

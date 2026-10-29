@@ -1,6 +1,8 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { CheckResult } from "../domain/answer";
 import { usePractice } from "./use-practice";
+import { Theme } from "./theme";
+import { useTheme, useThemedStyles } from "./theme-context";
 
 /** Traduce el veredicto a algo legible */
 function verdictText(result: CheckResult): string {
@@ -30,6 +32,9 @@ export function PracticeScreen() {
         reveal,
         next,
     } = usePractice();
+
+    const { theme } = useTheme();
+    const styles = useThemedStyles(makeStyles);
 
     if (status === "error") {
         return (
@@ -62,6 +67,7 @@ export function PracticeScreen() {
                 value={answer}
                 onChangeText={setAnswer}
                 placeholder="Escribe la traduccion"
+                placeholderTextColor={theme.textMuted}
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!answered}
@@ -101,34 +107,36 @@ export function PracticeScreen() {
     )
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-    centered: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-        backgroundColor: '#fff',
-    },
-    phrase: { fontSize: 24, fontWeight: 'bold', marginBottom: 12 },
-    hintText: { fontSize: 18, letterSpacing: 2, color: "#666", marginBottom: 12 },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        padding: 12,
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    actions: { gap: 8 },
-    primary: { backgroundColor: "#1f6feb", borderRadius: 8, padding: 14, alignItems: "center" },
-    primaryText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-    secondary: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 14, alignItems: "center" },
-    secondaryText: { color: "#1f6feb", fontSize: 16 },
-    resultBox: { gap: 8 },
-    verdict: { fontSize: 20, fontWeight: "bold" },
-    label: { fontSize: 14, color: "#666", marginTop: 8 },
-    translation: { fontSize: 16 },
-    hint: { textAlign: "center", color: "#666" },
-    error: { color: "#b00020", textAlign: "center" }
-})
+const makeStyles = (theme: Theme) =>
+    StyleSheet.create({
+        container: { flex: 1, padding: 16, backgroundColor: theme.background },
+        centered: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+            backgroundColor: theme.background,
+        },
+        phrase: { fontSize: 24, fontWeight: "bold", marginBottom: 12, color: theme.text },
+        hintText: { fontSize: 18, letterSpacing: 2, color: theme.textMuted, marginBottom: 12 },
+        input: {
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16,
+            marginBottom: 16,
+            color: theme.text,
+        },
+        actions: { gap: 8 },
+        primary: { backgroundColor: theme.primary, borderRadius: 8, padding: 14, alignItems: "center" },
+        primaryText: { color: theme.onPrimary, fontSize: 16, fontWeight: "bold" },
+        secondary: { borderWidth: 1, borderColor: theme.border, borderRadius: 8, padding: 14, alignItems: "center" },
+        secondaryText: { color: theme.primary, fontSize: 16 },
+        resultBox: { gap: 8 },
+        verdict: { fontSize: 20, fontWeight: "bold", color: theme.text },
+        label: { fontSize: 14, color: theme.textMuted, marginTop: 8 },
+        translation: { fontSize: 16, color: theme.text },
+        hint: { textAlign: "center", color: theme.textMuted },
+        error: { color: theme.danger, textAlign: "center" },
+    });

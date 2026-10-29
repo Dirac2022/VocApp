@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { BackupFeedback, useBackup } from "./use-backup";
+import { Theme } from "./theme";
+import { useThemedStyles } from "./theme-context";
 
 /**Convierte el estado de la operacion en el mensaje visible, o en nada */
 function feedbackText(feedback: BackupFeedback): string | null {
@@ -38,6 +40,8 @@ function feedbackText(feedback: BackupFeedback): string | null {
 
 export function BackupScreen() {
     const { feedback, exportNow, importNow, saveToFolder } = useBackup();
+
+    const styles = useThemedStyles(makeStyles);
 
     const working = feedback.kind === "working";
     const message = feedbackText(feedback);
@@ -81,20 +85,21 @@ export function BackupScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, backgroundColor: '#fff', gap: 12 },
-    paragraph: { fontSize: 14, color: '#444', lineHeight: 20, marginTop: 8 },
-    bold: { fontWeight: 'bold' },
-    primary: { backgroundColor: '#1f6feb', borderRadius: 8, padding: 14, alignItems: 'center' },
-    primaryText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-    secondary: {
-        borderWidth: 1,
-        borderColor: '#1f6feb',
-        borderRadius: 8,
-        padding: 14,
-        alignItems: 'center',
-    },
-    secondaryText: { color: '#1f6feb', fontSize: 16 },
-    ok: { color: '#1a7f37', marginTop: 8 },
-    problem: { color: '#b00020', marginTop: 8 },
-});
+const makeStyles = (theme: Theme) =>
+    StyleSheet.create({
+        container: { flex: 1, padding: 16, backgroundColor: theme.background, gap: 12 },
+        paragraph: { fontSize: 14, color: theme.textMuted, lineHeight: 20, marginTop: 8 },
+        bold: { fontWeight: 'bold' },
+        primary: { backgroundColor: theme.primary, borderRadius: 8, padding: 14, alignItems: 'center' },
+        primaryText: { color: theme.onPrimary, fontSize: 16, fontWeight: 'bold' },
+        secondary: {
+            borderWidth: 1,
+            borderColor: theme.primary,
+            borderRadius: 8,
+            padding: 14,
+            alignItems: 'center',
+        },
+        secondaryText: { color: theme.primary, fontSize: 16 },
+        ok: { color: theme.success, marginTop: 8 },
+        problem: { color: theme.danger, marginTop: 8 },
+    });

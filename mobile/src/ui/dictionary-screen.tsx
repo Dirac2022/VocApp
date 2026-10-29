@@ -2,9 +2,12 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, View, Pressab
 import { Link } from "expo-router";
 import { Phrase } from '../domain/types';
 import { DictionaryStatus, useDictionary } from './use-dictionary';
+import { Theme } from "./theme";
+import { useTheme, useThemedStyles } from "./theme-context";
 
 /** Una fila de la lista: la frase en inglés y sus traducciones debajo */
 function PhraseItem({ phrase }: { phrase: Phrase }) {
+    const styles = useThemedStyles(makeStyles);
     return (
         <Link href={{ pathname: "/frase/[id]", params: { id: phrase.id } }} asChild>
             <Pressable style={styles.row}>
@@ -30,6 +33,7 @@ function DictionaryBody({
     errorMessage: string;
     term: string;
 }) {
+    const styles = useThemedStyles(makeStyles);
     if (status === "loading") {
         return (
             <View style={styles.centered}>
@@ -70,7 +74,8 @@ function DictionaryBody({
 
 export function DictionaryScreen() {
     const { status, phrases, errorMessage, term, setTerm } = useDictionary();
-
+    const styles = useThemedStyles(makeStyles);
+    const { theme } = useTheme();
     return (
         <View style={styles.container}>
             <TextInput
@@ -78,6 +83,7 @@ export function DictionaryScreen() {
                 value={term}
                 onChangeText={setTerm}
                 placeholder='Buscar frase o traducción'
+                placeholderTextColor={theme.textMuted}
                 autoCapitalize='none'
                 autoCorrect={false}
             />
@@ -96,28 +102,35 @@ export function DictionaryScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff', paddingTop: 12, paddingHorizontal: 16 },
-    search: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-    count: { fontSize: 13, color: "#666", marginTop: 8, marginBottom: 4 },
-    centered: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-    },
-    title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-    row: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
-    english: { fontSize: 16 },
-    spanish: { fontSize: 14, color: '#666', marginTop: 2 },
-    hint: { marginTop: 8 },
-    error: { color: '#b00020', textAlign: 'center' },
-});
+const makeStyles = (theme: Theme) =>
+    StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: theme.background,
+            paddingTop: 12,
+            paddingHorizontal: 16,
+        },
+        search: {
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 8,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            color: theme.text,
+        },
+        count: { fontSize: 13, color: theme.textMuted, marginTop: 8, marginBottom: 4 },
+        centered: {
+            flex: 1,
+            backgroundColor: theme.background,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+        },
+        title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: theme.text },
+        row: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: theme.border },
+        english: { fontSize: 16, color: theme.text },
+        spanish: { fontSize: 14, color: theme.textMuted, marginTop: 2 },
+        hint: { marginTop: 8, color: theme.textMuted },
+        error: { color: theme.danger, textAlign: 'center' },
+    });
