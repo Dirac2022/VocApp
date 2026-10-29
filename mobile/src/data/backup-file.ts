@@ -19,7 +19,7 @@ export async function exportBackupFile(contents: string): Promise<void> {
 
     // overwrite evita que falle si hoy ya exportaste una vez
     file.create({ overwrite: true });
-    file.write(contents);
+    await file.write(contents);
 
     if (!(await Sharing.isAvailableAsync())) {
         throw new Error("Este dispositivo no permite compartir archivos");
@@ -75,7 +75,7 @@ export async function saveBackupToFolder(contents: string): Promise<string | nul
     }
 
     const file = directory.createFile(backupFileName(new Date()), "application/json");
-    file.write(contents);
+    await file.write(contents);
 
     return file.uri;
 }
